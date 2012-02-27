@@ -261,35 +261,183 @@ public class TacticBull1 implements Tactic {
     	Position posBalon = sp.ballPosition();
     	Position [] posMios=sp.myPlayers();
     	Position [] posRivales= sp.rivalPlayers();
+    	
+    	
+    	
+    	if (posBalon.getY() < -(Constants.LARGO_CAMPO_JUEGO/4 )) {
+    		// DEFENSA FERREA
+    		return executeHighDefense (sp);
+    	}else if (posBalon.getY() < 0){
+    		// DEFENSA
+    		return executeDefense (sp);
+    	}else if (posBalon.getY() < (Constants.LARGO_CAMPO_JUEGO/4 ) ){
+    		// MEDIO ATAQUE
+    		return executeAttack (sp);
+    	}else{
+    		// XUT
+    		return executeGoal (sp);
+    		
+    	}
+    	
    	
+    	
+    }
+    
+    
+    public Command goalkeeper (MisJugadores jugador, Position posBalon, Position posPase){
+    	if (posBalon.getX() > (Constants.LARGO_ARCO / 2)){
+    		if (jugador.getDistance() < Constants.DISTANCIA_CONTROL_BALON){
+    			return  new CommandHitBall(jugador.getJugador(), posPase, 1, Constants.ANGULO_VERTICAL);
+    		}
+    		else {
+    			return new CommandMoveTo(jugador.getJugador(), new Position (Constants.LARGO_ARCO / 2,-Constants.LARGO_CAMPO_JUEGO/2));
+    		}
+    	} else if (posBalon.getX() < -(Constants.LARGO_ARCO / 2)){
+    		if (jugador.getDistance() < Constants.DISTANCIA_CONTROL_BALON){
+    			return  new CommandHitBall(jugador.getJugador(), posPase, 1, Constants.ANGULO_VERTICAL);
+    		}
+    		else {
+    			return new CommandMoveTo(jugador.getJugador(), new Position (-Constants.LARGO_ARCO / 2,-Constants.LARGO_CAMPO_JUEGO/2));
+    		}
+    	} else {
+    		if (jugador.getDistance() < Constants.DISTANCIA_CONTROL_BALON){
+    			return  new CommandHitBall(jugador.getJugador(), posPase, 1, Constants.ANGULO_VERTICAL);
+    		}
+    		else {
+    			return new CommandMoveTo(jugador.getJugador(), new Position (posBalon.getX() ,-Constants.LARGO_CAMPO_JUEGO/2));
+    		}
+    	}
+    	
+    	
+    	
+    }
+    
+    /** 
+     * Function that sends a defense to ball and kick the ball if it is possible or go to cover attacant 
+     * 
+     * @param jugador
+     * @param posBalon
+     * @param posPase
+     * @return command
+     */
+    
+    public Command defense (MisJugadores jugador, Position posBalon, Position posPase){
+    	if (jugador.getDistance() < Constants.DISTANCIA_CONTROL_BALON){
+			return  new CommandHitBall(jugador.getJugador(), posPase, 1, Constants.ANGULO_VERTICAL);
+        	
+		}
+		else {
+			return new CommandMoveTo(jugador.getJugador(),posBalon);
+		}
+    }
+    
+    public List<Command> executeHighDefense (GameSituations sp) {
+    	List <Command> commands= new ArrayList <Command> ();
+    	Command command;
+    	List <Integer> jugadoresUsados = new ArrayList<Integer>();
+    	
+    	Position [] posMios=sp.myPlayers();
+    	Position [] posRivales= sp.rivalPlayers();
+    	Position posBalon = sp.ballPosition();
+    	
     	List <MisJugadores> lJugadoresBalon =Util.ordenaPorDistancia(posBalon, posMios);
     	
+    	if (sp.rivalCanKick().length>0){
+    		// Ojo que pueden chutar desde cerca.
+    		MisJugadores jugadorBalon= lJugadoresBalon.get(0);
+    		if (jugadorBalon.getJugador() !=0){
+    			command=defense (jugadorBalon, posBalon, new Position (0,0));
+    			commands.add(command);
+    			jugadoresUsados.add (command.getPlayerIndex());
+    		}else{
+    			jugadorBalon =lJugadoresBalon.get(1); 
+    			command=defense (jugadorBalon, posBalon, new Position (0,0));
+    			commands.add(command);
+    			jugadoresUsados.add (command.getPlayerIndex());
+    		}
+    		
+    	}else{
+    		// TODO: tendriamos que mover el balón de momento despejamos
+    		command=defense (lJugadoresBalon.get(0), posBalon, new Position (0,0));
+			commands.add(command);
+			jugadoresUsados.add (command.getPlayerIndex());
+    		
+    	}
+    	command=goalkeeper (new MisJugadores(0, Util.calculaDistancia(posMios [0], posBalon)),posBalon,new Position (0,0));
+    	commands.add(command);
+		jugadoresUsados.add (command.getPlayerIndex());
+    	return commands;
+    }
+        
+    public List<Command> executeDefense (GameSituations sp) {
+    	List <Command> commands= new ArrayList <Command> ();
+    	Command command;
+    	List <Integer> jugadoresUsados = new ArrayList<Integer>();
+    	
+    	Position posBalon = sp.ballPosition();
+    	Position [] posMios=sp.myPlayers();
+    	Position [] posRivales= sp.rivalPlayers();
+    	
+    	List <MisJugadores> lJugadoresBalon =Util.ordenaPorDistancia(posBalon, posMios);
     	List <MisJugadores> lRivalesBalon =Util.ordenaPorDistancia(posBalon, posRivales);
     	
-    	List <Command> commands= new ArrayList <Command> ();
-    	Command command= new CommandHitBall(lJugadoresBalon.get(0).getJugador(), Constants.posteIzqArcoSup, 1, Constants.ANGULO_VERTICAL);
+    	/*Command command= new CommandHitBall(lJugadoresBalon.get(0).getJugador(), Constants.posteIzqArcoSup, 1, Constants.ANGULO_VERTICAL);
     	commands.add(command);
     	command = new CommandMoveTo(lJugadoresBalon.get(0).getJugador(),posBalon);
-    	commands.add(command);
+    	commands.add(command);*/
     	int jugadorRivalBalon =lRivalesBalon.get(0).getJugador(); 
-    	int jugadorCercaJugadorRivalBalon = Util.ordenaPorDistancia(posRivales[jugadorRivalBalon], posRivales).get(0).jugador;
+    	//int jugadorCercaJugadorRivalBalon = Util.ordenaPorDistancia(posRivales[jugadorRivalBalon], posRivales).get(0).jugador;
     	
-    	command = new CommandMoveTo(jugadorCercaJugadorRivalBalon,posRivales[jugadorRivalBalon]);
+    	List <MisJugadores> lJugadoresCercaJugadorRivalBalon = Util.ordenaPorDistancia(posRivales[jugadorRivalBalon], posRivales);
+    	
+    	/*command = new CommandMoveTo(jugadorCercaJugadorRivalBalon,posRivales[jugadorRivalBalon]);
+    	commands.add(command);*/
+    	
+    	MisJugadores jugadorBalon = lJugadoresBalon.get(0);
+    	
+    	command= defense (jugadorBalon,posBalon,Constants.posteIzqArcoSup);
     	commands.add(command);
-    	List <Integer> jugadoresUsados = new ArrayList<Integer>();
-    	jugadoresUsados.add(new Integer (lJugadoresBalon.get(0).getJugador()));
-    	jugadoresUsados.add(new Integer (0));
-    	jugadoresUsados.add(new Integer (jugadorRivalBalon));
+		jugadoresUsados.add (command.getPlayerIndex());
+    	
+    	
+    	if (lJugadoresCercaJugadorRivalBalon.get(0).getJugador ()!=lJugadoresBalon.get(0).getJugador()){
+    		command = new CommandMoveTo(lJugadoresCercaJugadorRivalBalon.get(0).getJugador(),posRivales[jugadorRivalBalon]);
+        	commands.add(command);
+        	jugadoresUsados.add(lJugadoresCercaJugadorRivalBalon.get(0).getJugador());
+    	}else {
+    		command = new CommandMoveTo(lJugadoresCercaJugadorRivalBalon.get(1).getJugador(),posRivales[jugadorRivalBalon]);
+        	commands.add(command);
+        	jugadoresUsados.add(lJugadoresCercaJugadorRivalBalon.get(1).getJugador());
+    	}
+    	
+    	if (!jugadoresUsados.contains(new Integer (0))){
+    		command=goalkeeper (new MisJugadores(0, Util.calculaDistancia(posMios [0], posBalon)),posBalon,new Position (0,0));
+        	commands.add(command);
+    		jugadoresUsados.add (command.getPlayerIndex());
+    	}
+    	//jugadoresUsados.add(new Integer (0));
+    	
     	for (MisJugadores jugador: lJugadoresBalon ){
-    		int j=0;
-    		List <MisJugadores> lCerca =Util.ordenaPorDistancia(posMios[jugador.getJugador()], posRivales);
-    		while (jugadoresUsados.contains(new Integer (lCerca.get(j).getJugador())) && j<lCerca.size() ){
-    			j++;
+    		if (!jugadoresUsados.contains(new Integer (jugador.getJugador()))){
+    		
+    			List <MisJugadores> lCerca =Util.ordenaPorDistancia(posMios[jugador.getJugador()], posRivales);
+    			command = new CommandMoveTo(jugador.getJugador(), posRivales [lCerca.get(0).getJugador()]);
+    			commands.add( command);
+    			jugadoresUsados.add(new Integer (jugador.getJugador()));
     		}
-    		command = new CommandMoveTo(jugador.getJugador(), posRivales [lCerca.get(j).getJugador()]);
-    		commands.add( command);
-    		jugadoresUsados.add(new Integer (jugador.getJugador()));
-    		    	}
+    	}
         return commands;
     }
+    
+    public List<Command> executeAttack (GameSituations sp) {
+    	List <Command> commands= new ArrayList <Command> ();
+    	return commands;
+    }
+    
+    public List<Command> executeGoal (GameSituations sp) {
+    	List <Command> commands= new ArrayList <Command> ();
+    	return commands;
+    }
+    
+    
 }
