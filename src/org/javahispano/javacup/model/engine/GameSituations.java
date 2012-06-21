@@ -3,6 +3,7 @@ package org.javahispano.javacup.model.engine;
 import org.javahispano.javacup.model.PlayerDetail;
 import org.javahispano.javacup.model.trajectory.AbstractTrajectory;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import org.javahispano.javacup.model.util.Constants;
 import org.javahispano.javacup.model.util.Position;
@@ -10,7 +11,24 @@ import org.javahispano.javacup.model.util.Position;
 /**Esta clase provee información de la situacion del partido a las tacticas*/
 //public final class GameSituations {
 public class GameSituations {
-    /**Inicializa una situacion de partido*/
+    @Override
+	public String toString() {
+		return "GameSituations [balon=" + balon + ", alturaBalon="
+				+ alturaBalon + ", golesMios=" + golesMios
+				+ ", golesContrarios=" + golesContrarios + ", iteracion="
+				+ iteracion + ", iterReal=" + iterReal + ", misJugadores="
+				+ Arrays.toString(misJugadores) + ", rivales="
+				+ Arrays.toString(rivales) + ", saco=" + saco + ", sacaRival="
+				+ sacaRival + ", quienes=" + quienes + ", jugadores="
+				+ Arrays.toString(jugadores) + ", iteracionesParaRematar="
+				+ Arrays.toString(iteracionesParaRematar) + ", puedenRematar="
+				+ Arrays.toString(puedenRematar) + ", puedenRematarRival="
+				+ Arrays.toString(puedenRematarRival) + ", trayectoria="
+				+ trayectoria + ", x0=" + x0 + ", y0=" + y0 + ", t0=" + t0
+				+ ", a0=" + a0 + ", invert=" + invert + "]";
+	}
+
+	/**Inicializa una situacion de partido*/
     public GameSituations() {
         misJugadores = new Position[11];
         rivales = new Position[11];

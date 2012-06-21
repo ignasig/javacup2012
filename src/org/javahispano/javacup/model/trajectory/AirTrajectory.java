@@ -25,7 +25,9 @@ public class AirTrajectory extends AbstractTrajectory {
         }
     }
 
-    @Override
+   
+
+	@Override
     public double getX(double t) {
         if (t > dt && nextTrayectory != null) {
             return nextTrayectory.getX(t - dt);

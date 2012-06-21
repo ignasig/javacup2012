@@ -40,9 +40,9 @@ public abstract class Command {
 	@Override
 	public String toString() {
 		if (getCommandType().equals(CommandType.HIT_BALL)) {
-			return "Hit ball(" + getPlayerIndex() + ")";
+			return "Hit ball( " + getPlayerIndex() + " -> "+((CommandHitBall)this).getDestiny()+")";
 		} else if (getCommandType().equals(CommandType.MOVE_TO)) {
-			return "Go To(" + getPlayerIndex() + ")";
+			return "Go To(" + getPlayerIndex()+ " -> "+((CommandMoveTo)this).getMoveTo()+")";
 		} else {
 			return "none";
 		}

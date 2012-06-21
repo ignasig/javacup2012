@@ -32,6 +32,6 @@
   <fps>20</fps>
   <tipoTexto>0</tipoTexto>
   <local>bull.TacticBull1</local>
-  <visita>org.javahispano.javacup.tacticas.tacticas_aceptadas.absolutsport.tactica.TacticaAbsolutSport</visita>
+  <visita>org.javahispano.javacup.tacticas.tacticas_aceptadas.Arsenal3.Arsenal3</visita>
   <guardados/>
 </org.javahispano.javacup.gui.principal.PrincipalDatos>

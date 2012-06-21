@@ -7,7 +7,19 @@ package org.javahispano.javacup.model.trajectory;
  */
 public abstract class AbstractTrajectory {
 
-    protected final double vx0, vy0, x0, y0;//Velocidad y coordenadas iniciales
+    @Override
+	public String toString() {
+    	 if (this instanceof AirTrajectory) {
+    		 return "AirTrajectory [vx0=" + vx0 + ", vy0=" + vy0 + ", x0=" + x0
+    					+ ", y0=" + y0 + ", dt=" + dt + "]";
+    	 }else{
+    		 return "LandTrajectory [vx0=" + vx0 + ", vy0=" + vy0 + ", x0=" + x0
+    					+ ", y0=" + y0 + ", dt=" + dt + "]";
+    	 }
+		
+	}
+
+	protected final double vx0, vy0, x0, y0;//Velocidad y coordenadas iniciales
     protected final double dt;//Delta de tiempo donde la trayectoria es valida
 
     /*Constructor por defecto*/
