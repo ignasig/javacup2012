@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.javahispano.javacup.model.engine.GameSituations;
+import org.javahispano.javacup.model.util.Constants;
 import org.javahispano.javacup.model.util.Position;
 
 public class Util {
@@ -73,5 +75,60 @@ public class Util {
     	}
     	return result;
     }
+    
+    public static int getIteracionesBalon (GameSituations gs,int jugador, boolean rival, Position pos){
+    	if (rival){
+    		double distancia = calculaDistancia(gs.rivalPlayers()[jugador], pos);
+    		double velocidad = Constants.getVelocidad(gs.getRivalPlayerSpeed(jugador));
+    		int iteraciones = (int) ((distancia-Constants.DISTANCIA_CONTROL_BALON)/velocidad);
+    		return iteraciones;
+    		
+    	}else{
+    		double distancia = calculaDistancia(gs.myPlayers()[jugador], pos);
+    		double velocidad = Constants.getVelocidad(gs.getMyPlayerSpeed(jugador));
+    		int iteraciones = (int) ((distancia-Constants.DISTANCIA_CONTROL_BALON)/velocidad);
+    		return iteraciones;
+    		
+    	}
+   	
+    }
+    
+    
+    public static Position getPosicionBalonEsperadajugador (GameSituations gs ){
+    	Position ballPosition=gs.ballPosition();
+    	double altitude = gs.ballAltitude();
+    	
+    	if (altitude>Constants.ALTURA_CONTROL_BALON ){
+    		//Hemos de contar en que momento la altura permite que la controlemos.
+    		
+    	}else{
+    		// Caso en el que podríamos ya ejercer control.
+    		
+    		
+    	}
+    	
+    	double [] trayectoria=gs.getTrajectory(gs.iteration());
+    	ballPosition.setPosition(ballPosition.getX()+trayectoria[0],ballPosition.getY()+trayectoria[1]);
+    	return ballPosition;
+    }
+     
+    
+    public static Position getPosicionBalonEsperadaPortero (GameSituations gs ){
+    	Position ballPosition=gs.ballPosition();
+    	double altitude = gs.ballAltitude();
+    	if (altitude>Constants.ALTO_ARCO){
+    		//Hemos de contar en que momento la altura permite que la controlemos.
+    		
+    	}else{
+    		// Caso en el que podríamos ya ejercer control.
+    		
+    		
+    	}
+    	
+    	double [] trayectoria=gs.getTrajectory(gs.iteration());
+    	ballPosition.setPosition(ballPosition.getX()+trayectoria[0],ballPosition.getY()+trayectoria[1]);
+    	return ballPosition;
+    }
 
+    
 }
